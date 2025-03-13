@@ -20,7 +20,7 @@
                     @endif
 
                     <!-- Add Candidate Form -->
-                    <form action="{{ route('admin.candidates.store') }}" method="POST">
+                    <form action="{{ route('admin.candidates.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
                             <label for="name">Name:</label>
@@ -61,6 +61,11 @@
                         <div class="form-group">
                             <label for="applied_position">Applied Position:</label>
                             <input type="text" name="applied_position" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cv_file">Upload CV (PDF or PNG):</label>
+                            <input type="file" name="cv_file" class="form-control" accept=".pdf,.png" required>
+                            <small class="form-text text-muted">Only PDF and PNG files are allowed.</small>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Submit</button>

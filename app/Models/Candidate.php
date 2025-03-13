@@ -24,8 +24,9 @@ class Candidate extends Model
         'test_status',
         'payment_status',
         'cv_status',
-        'visa_status',
+        'visa_status',       
         'remarks',
+        'cv_file_path',
     ];
 
     protected static function boot()
@@ -36,8 +37,7 @@ class Candidate extends Model
             $candidate->random_id = self::generateRandomId();
         });
     }
-
-    private static function generateRandomId()
+  public static function generateRandomId()
     {
         $randomId = mt_rand(100000, 999999); // Generate a 6-digit random number
         while (self::where('random_id', $randomId)->exists()) {

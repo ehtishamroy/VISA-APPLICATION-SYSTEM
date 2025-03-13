@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'site_title' => 'E-Wallet',
+    'site_title' => 'Sahara International',
 
 ];

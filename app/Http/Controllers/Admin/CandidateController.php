@@ -17,6 +17,7 @@ class CandidateController extends Controller
     // Store candidate data
     public function store(Request $request)
     {
+        
         $request->validate([
             'name' => 'required|string|max:255',
             'father_name' => 'required|string|max:255',
@@ -28,10 +29,36 @@ class CandidateController extends Controller
             'applied_country' => 'required|string|max:255',
             'applied_company' => 'required|string|max:255',
             'applied_position' => 'required|string|max:255',
+            'cv_file' => 'required|file|mimes:pdf,png|max:10240', // Max 10MB
+
         ]);
+ 
+       
 
-        Candidate::create($request->all());
+        // Store the CV file
+        $filePath = $request->file('cv_file')->store('cvs', 'public');
+        $randomId = Candidate::generateRandomId();
 
+        // Create the candidate
+        Candidate::create([
+            'random_id' => $randomId,
+            'name' => $request->name,
+            'father_name' => $request->father_name,
+            'mother_name' => $request->mother_name,
+            'passport_number' => $request->passport_number,
+            'cnic_number' => $request->cnic_number,
+            'age' => $request->age,
+            'city' => $request->city,
+            'applied_country' => $request->applied_country,
+            'applied_company' => $request->applied_company,
+            'applied_position' => $request->applied_position,
+            'cv_file_path' => $filePath, // Save the file path
+            'test_status' => 'Fail', // Default value
+            'payment_status' => 'Unpaid', // Default value
+            'cv_status' => 'Not Submitted', // Default value
+            'visa_status' => 'Pending', // Default value
+        ]);
+    
         return redirect()->route('admin.candidates.create')->with('success', 'Candidate added successfully!');
     }
 
@@ -70,6 +97,95 @@ class CandidateController extends Controller
     
         return view('admin.candidates.index', compact('candidates'));
     }
+
+    public function addRemark(Request $request, Candidate $candidate)
+    {
+        // Validate the request
+        $request->validate([
+            'remarks' => 'required|string|max:255',
+        ]);
+
+        // Update the candidate's remarks
+        $candidate->update([
+            'remarks' => $request->remarks,
+        ]);
+
+        // Redirect back with success message
+        return redirect()->route('admin.candidates.index')
+            ->with('success', 'Remark added successfully!');
+    }
+
+
+    /**
+     * Update Visa Status (CV Loader's Action)
+     */
+
+    /**
+     * Upload CV (CV Loader's Action)
+     */
+  
+
+
+   
+   public function updateCvStatus(Request $request, Candidate $candidate)
+   {
+       // Validate the request
+       $request->validate([
+           'cv_status' => 'required|in:Not Submitted,Submitted',
+       ]);
+
+       // Update the candidate's CV status
+       $candidate->update([
+           'cv_status' => $request->cv_status,
+       ]);
+
+       // Redirect back with success message
+       return redirect()->route('admin.candidates.index')
+           ->with('success', 'CV status updated successfully!');
+   }
+
+   /**
+    * Update Visa Status (CV Loader's Action)
+    */
+   public function updateVisaStatus(Request $request, Candidate $candidate)
+   {
+       // Validate the request
+       $request->validate([
+           'visa_status' => 'required|in:Pending,Accepted,Rejected',
+       ]);
+
+       // Update the candidate's visa status
+       $candidate->update([
+           'visa_status' => $request->visa_status,
+       ]);
+
+       // Redirect back with success message
+       return redirect()->route('admin.candidates.index')
+           ->with('success', 'Visa status updated successfully!');
+   }
+
+   /**
+    * Upload CV (CV Loader's Action)
+    */
+   public function uploadCv(Request $request, Candidate $candidate)
+   {
+       // Validate the request
+       $request->validate([
+           'cv_file' => 'required|file|mimes:pdf,doc,docx|max:2048', // Max 2MB, PDF/DOC/DOCX files
+       ]);
+
+       // Store the CV file
+       $filePath = $request->file('cv_file')->store('cvs', 'public');
+
+       // Update the candidate's CV file path
+       $candidate->update([
+           'cv_file_path' => $filePath,
+       ]);
+
+       // Redirect back with success message
+       return redirect()->route('admin.candidates.index')
+           ->with('success', 'CV uploaded successfully!');
+   }
 // Display the edit form
 public function edit(Candidate $candidate)
 {
@@ -97,16 +213,23 @@ public function update(Request $request, Candidate $candidate)
     return redirect()->route('admin.candidates.index')->with('success', 'Candidate updated successfully!');
 }
     // Update test status (for Instructor)
-    public function updateTestStatus(Request $request, Candidate $candidate)
-    {
-        $request->validate([
-            'test_status' => 'required|in:Pass,Fail',
-        ]);
+  // Update test status (for Instructor)
+  public function updateTestStatus(Request $request, Candidate $candidate)
+  {
+      // Validate the request
+      $request->validate([
+          'test_status' => 'required|in:Pass,Fail'
+      ]);
 
-        $candidate->update(['test_status' => $request->test_status]);
+      // Update the candidate's test status
+      $candidate->update([
+          'test_status' => $request->test_status
+      ]);
 
-        return redirect()->route('admin.candidates.index')->with('success', 'Test status updated successfully!');
-    }
+      // Redirect back with success message
+      return redirect()->route('admin.candidates.index')
+          ->with('success', 'Test status updated successfully!');
+  }
     public function show(Candidate $candidate)
 {
     return view('admin.candidates.show', compact('candidate'));

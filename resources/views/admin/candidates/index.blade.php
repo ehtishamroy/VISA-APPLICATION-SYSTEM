@@ -93,6 +93,10 @@
                                 <th>Payment Status</th>
                                 <th>CV Status</th>
                                 <th>Visa Status</th>
+                                <th>Remarks</th>
+                                <th>CV Submission</th>
+                                <th>Rejected/Accepted</th>
+                             
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -103,37 +107,48 @@
                                     <td>{{ $candidate->name }}</td>
                                     <td>{{ $candidate->applied_country }}</td>
                                     <td>{{ $candidate->applied_position }}</td>
+                           <td>
+    @can('test_status_update')
+        <form action="{{ route('admin.candidates.updateTestStatus', $candidate->id) }}" method="POST">
+            @csrf
+            @method('PUT') <!-- Add this line -->
+            <select 
+                name="test_status" 
+                class="form-control form-control-sm" 
+                onchange="this.form.submit()"
+            >
+                <option value="Pass" {{ $candidate->test_status === 'Pass' ? 'selected' : '' }}>
+                    Pass
+                </option>
+                <option value="Fail" {{ $candidate->test_status === 'Fail' ? 'selected' : '' }}>
+                    Fail
+                </option>
+            </select>
+        </form>
+    @else
+        {{ $candidate->test_status }}
+    @endcan
+</td>
+
+                                    <td>{{ $candidate->payment_status }}</td>
+                                    <td>{{ $candidate->cv_status }}</td>
+                                    <td>{{ $candidate->visa_status }}</td>
                                     <td>
-                                        @can('test_status_update')
-                                            <form action="{{ route('admin.candidates.updateTestStatus', $candidate->id) }}" method="POST" class="d-inline">
+                                        <!-- Add Remarks Form (For Dialer) -->
+                                        @can('dailer_view')
+                                            <form action="{{ route('admin.candidates.addRemark', $candidate->id) }}" method="POST" class="d-inline">
                                                 @csrf
-                                                @method('PUT')
-                                                <select name="test_status" class="form-control form-control-sm" onchange="this.form.submit()">
-                                                    <option value="Pass" {{ $candidate->test_status == 'Pass' ? 'selected' : '' }}>Pass</option>
-                                                    <option value="Fail" {{ $candidate->test_status == 'Fail' ? 'selected' : '' }}>Fail</option>
-                                                </select>
+                                                <input type="text" name="remarks" class="form-control form-control-sm" value="{{ $candidate->remarks }}" placeholder="Add remarks">
+                                                <button type="submit" class="btn btn-sm btn-success mt-1">Save</button>
                                             </form>
                                         @else
-                                            {{ $candidate->test_status }}
+                                            {{ $candidate->remarks }}
                                         @endcan
                                     </td>
                                     <td>
-                                        @can('payment_status_update')
-                                            <form action="{{ route('admin.candidates.updatePaymentStatus', $candidate->id) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('PUT')
-                                                <select name="payment_status" class="form-control form-control-sm" onchange="this.form.submit()">
-                                                    <option value="Paid" {{ $candidate->payment_status == 'Paid' ? 'selected' : '' }}>Paid</option>
-                                                    <option value="Unpaid" {{ $candidate->payment_status == 'Unpaid' ? 'selected' : '' }}>Unpaid</option>
-                                                </select>
-                                            </form>
-                                        @else
-                                            {{ $candidate->payment_status }}
-                                        @endcan
-                                    </td>
-                                    <td>
+                                        <!-- CV Status Update -->
                                         @can('cv_status_update')
-                                            <form action="{{ route('admin.candidates.updateCvVisaStatus', $candidate->id) }}" method="POST" class="d-inline">
+                                            <form action="{{ route('admin.candidates.updateCvStatus', $candidate->id) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('PUT')
                                                 <select name="cv_status" class="form-control form-control-sm" onchange="this.form.submit()">
@@ -146,8 +161,9 @@
                                         @endcan
                                     </td>
                                     <td>
+                                        <!-- Visa Status Update -->
                                         @can('visa_status_update')
-                                            <form action="{{ route('admin.candidates.updateCvVisaStatus', $candidate->id) }}" method="POST" class="d-inline">
+                                            <form action="{{ route('admin.candidates.updateVisaStatus', $candidate->id) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('PUT')
                                                 <select name="visa_status" class="form-control form-control-sm" onchange="this.form.submit()">
@@ -160,6 +176,7 @@
                                             {{ $candidate->visa_status }}
                                         @endcan
                                     </td>
+                          
                                     <td>
                                         @can('candidate_edit')
                                             <a href="{{ route('admin.candidates.edit', $candidate->id) }}" class="btn btn-sm btn-primary">Edit</a>

@@ -33,7 +33,17 @@
                             <p><strong>CV Status:</strong> {{ $candidate->cv_status }}</p>
                             <p><strong>Visa Status:</strong> {{ $candidate->visa_status }}</p>
                             <p><strong>Remarks:</strong> {{ $candidate->remarks }}</p>
-                        </div>
+                          <!-- Add CV Download Link -->
+                          @if($candidate->cv_file_path)
+                          <p><strong>Download CV:</strong>
+                              <a href="{{ asset('storage/' . $candidate->cv_file_path) }}" class="btn btn-info" target="_blank">
+                                  Download CV
+                              </a>
+                          </p>
+                      @else
+                          <p>No CV uploaded.</p>
+                      @endif
+                  </div>
                     </div>
 
                     <div class="row mt-4">

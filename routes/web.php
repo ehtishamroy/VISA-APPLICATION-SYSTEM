@@ -31,13 +31,22 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('candidates', 'CandidateController');
     Route::get('candidates/{candidate}', 'CandidateController@show')->name('candidates.show');
 
-    // Instructor Routes (Update Test Status)
-    Route::post('candidates/{candidate}/update-test-status', 'CandidateController@updateTestStatus')->name('candidates.updateTestStatus');
+     // CV Loader-Specific Routes
+     Route::put('candidates/{candidate}/update-cv-status', 'CandidateController@updateCvStatus')
+     ->name('candidates.updateCvStatus');
+ Route::put('candidates/{candidate}/update-visa-status', 'CandidateController@updateVisaStatus')
+     ->name('candidates.updateVisaStatus');
+ Route::post('candidates/{candidate}/upload-cv', 'CandidateController@uploadCv')
+     ->name('candidates.uploadCv');
 
+    // Instructor Routes (Update Test Status)
+    Route::put('candidates/{candidate}/update-test-status', 'CandidateController@updateTestStatus')->name('candidates.updateTestStatus');
     // Accountant Routes (Update Payment Status)
     Route::post('candidates/{candidate}/update-payment-status', 'CandidateController@updatePaymentStatus')->name('candidates.updatePaymentStatus');
 
-    // CV Loader Routes (Update CV and Visa Status)
+    // Dialer-Specific Routes
+    Route::post('candidates/{candidate}/add-remark', 'CandidateController@addRemark')
+    ->name('candidates.addRemark');    // CV Loader Routes (Update CV and Visa Status)
     Route::post('candidates/{candidate}/update-cv-visa-status', 'CandidateController@updateCvVisaStatus')->name('candidates.updateCvVisaStatus');
 });
 

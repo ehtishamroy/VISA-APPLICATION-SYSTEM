@@ -17,18 +17,19 @@ return new class extends Migration
             $table->string('name');
             $table->string('father_name');
             $table->string('mother_name');
-            $table->string('passport_number')->unique(); // Ensure this line exists
+            $table->string('passport_number')->unique();
             $table->string('cnic_number')->unique();
             $table->integer('age');
             $table->string('city');
             $table->string('applied_country');
             $table->string('applied_company');
             $table->string('applied_position');
-            $table->enum('test_status', ['Pass', 'Fail'])->default('Pending');
-            $table->enum('payment_status', ['Paid', 'Unpaid'])->default('pending');
+            $table->enum('test_status', ['Pass', 'Fail'])->default('Fail'); // Correct default value
+            $table->enum('payment_status', ['Paid', 'Unpaid'])->default('Unpaid'); // Correct default value
             $table->enum('cv_status', ['Not Submitted', 'Submitted'])->default('Not Submitted');
             $table->enum('visa_status', ['Pending', 'Accepted', 'Rejected'])->default('Pending');
             $table->text('remarks')->nullable();
+            $table->string('cv_file_path')->nullable(); // Add this line
             $table->timestamps();
         });
     }

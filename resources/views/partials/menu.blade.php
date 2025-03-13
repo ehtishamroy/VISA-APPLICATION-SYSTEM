@@ -24,15 +24,43 @@
                   </a>
               </li>
           @endcan
+          @can('test_status_update')
+    <li class="c-sidebar-nav-item {{ request()->is('admin/candidates*') ? 'c-active' : '' }}">
+        <a href="{{ route('admin.candidates.index') }}" class="c-sidebar-nav-link">
+            <i class="c-sidebar-nav-icon fas fa-clipboard-check"></i>
+            Manage Candidates
+        </a>
+    </li>
+@endcan
+@can('dailer_view')
+<li class="c-sidebar-nav-item {{ request()->is('admin/candidates*') ? 'c-active' : '' }}">
+    <a href="{{ route('admin.candidates.index') }}" class="c-sidebar-nav-link">
+        <i class="c-sidebar-nav-icon fas fa-phone"></i>
+        {{ trans('global.candidates') }}
+    </a>
+</li>
+@endcan
+   <!-- Accountant Menu Item -->
+   @can('payment_status_update')
+   <li class="c-sidebar-nav-item {{ request()->is('admin/candidates*') ? 'c-active' : '' }}">
+       <a href="{{ route('admin.candidates.index') }}" class="c-sidebar-nav-link">
+           <i class="c-sidebar-nav-icon fas fa-wallet"></i>
+           {{ trans('global.candidates') }}
+       </a>
+   </li>
+@endcan
+@can('cv_status_update')
+<li class="c-sidebar-nav-item {{ request()->is('admin/candidates*') ? 'c-active' : '' }}">
+    <a href="{{ route('admin.candidates.index') }}" class="c-sidebar-nav-link">
+        <i class="c-sidebar-nav-icon fas fa-file-upload"></i>
+        {{ trans('global.candidates') }}
+    </a>
+</li>
+@endcan
         @can('user_management_access')
             <li class="c-sidebar-nav-dropdown {{ request()->is("admin/permissions*") ? "c-show" : "" }} {{ request()->is("admin/roles*") ? "c-show" : "" }} {{ request()->is("admin/users*") ? "c-show" : "" }}">
-                <a class="c-sidebar-nav-dropdown-toggle" href="#">
-                    <i class="fa-fw fas fa-users c-sidebar-nav-icon">
-
-                    </i>
-                    {{ trans('cruds.userManagement.title') }}
-                </a>
-                <ul class="c-sidebar-nav-dropdown-items">
+           
+                <li class="c-sidebar-nav-dropdown-items">
                     @can('permission_access')
                         <li class="c-sidebar-nav-item">
                             <a href="{{ route("admin.permissions.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/permissions") || request()->is("admin/permissions/*") ? "c-active" : "" }}">
@@ -64,7 +92,7 @@
                             </a>
                         </li>
                     @endcan
-                </ul>
+                </li>
             </li>
         @endcan
         {{-- @can('transaction_access')
